@@ -6,3 +6,5 @@ construir site:
     - pwd
     - whoami
     - npm --version
+    - npm install
+    - npm run build
