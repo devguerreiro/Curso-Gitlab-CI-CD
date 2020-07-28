@@ -1,3 +1,5 @@
+image: node
+
 construir site:
   script:
     - ls -ltra
