@@ -2,6 +2,7 @@ image: node
 
 construir site:
   script:
+    - ls
     - cd website/
     - npm install
     - npm run build
