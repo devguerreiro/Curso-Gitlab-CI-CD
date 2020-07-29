@@ -30,11 +30,11 @@ deploy website:
   before_script:
     - npm install -g surge
   script:
-    - surge --project ./website/build/test-site --domain coruja-teste.surge.sh
+    - surge --project ./website/build/test-site --domain coruja-test.surge.sh
   after_script:
     - whoami
   environment:
     name: staging
-    url: http://coruja-teste.surge.sh
+    url: http://coruja-test.surge.sh
   only:
     - develop
