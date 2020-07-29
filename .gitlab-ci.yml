@@ -9,6 +9,10 @@ cache:
   paths:
     - ./website/build/
 
+before_script:
+  - whoami
+  - pwd
+
 build site:
   stage: build
   artifacts:
@@ -23,6 +27,12 @@ build site:
     - npm run build
 deploy website:
   stage: deploy
-  script:
+  before_script:
     - npm install -g surge
+  script:
     - surge --project ./website/build/test-site --domain coruja-teste.surge.sh
+  after_script:
+    - whoami
+  environment:
+    name: staging
+    url: http://coruja-teste.surge.sh
