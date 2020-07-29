@@ -29,12 +29,13 @@ deploy website:
   stage: deploy
   before_script:
     - npm install -g surge
+    - echo "corujam-cicd.surge.sh" > website/build/test-site/CNAME
   script:
-    - surge --project ./website/build/test-site --domain coruja-test.surge.sh
+    - surge website/build/test-site
   after_script:
     - whoami
   environment:
     name: staging
-    url: http://coruja-test.surge.sh
+    url: http://corujam-cicd.surge.sh
   only:
     - develop
