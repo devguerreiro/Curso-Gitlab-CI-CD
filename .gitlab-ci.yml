@@ -5,6 +5,10 @@ stages:
   - test
   - deploy
 
+cache:
+  paths:
+    - ./website/build/
+
 build site:
   stage: build
   artifacts:
@@ -17,3 +21,8 @@ build site:
     - cd website/
     - npm install
     - npm run build
+deploy website:
+  stage: deploy
+  script:
+    - npm install -g surge
+    - surge --project ./website/build/test-site --domain coruja-teste.surge.sh
