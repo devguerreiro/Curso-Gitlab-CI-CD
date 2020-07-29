@@ -36,3 +36,5 @@ deploy website:
   environment:
     name: staging
     url: http://coruja-teste.surge.sh
+  only:
+    - develop
