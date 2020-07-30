@@ -19,6 +19,11 @@ test site:
     - wait-on http://localhost:3000/ --timeout 40000
     - blc --recursive --exclude-external http://localhost:3000
 
+vulnerabilities check:
+  stage: test
+  script:
+    - cd website/ && npm install && npm run scan
+
 build site:
   stage: build
   cache:
@@ -44,9 +49,8 @@ deploy website:
     policy: pull
   before_script:
     - npm install -g surge
-    - echo "corujam-cicd.surge.sh" > website/build/test-site/CNAME
   script:
-    - surge website/build/test-site
+    - surge -p website/build/test-site -d corujam-cicd.surge.sh
   after_script:
     - whoami
   environment:
