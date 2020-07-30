@@ -1,8 +1,8 @@
 image: node
 
 stages:
-  - build
   - test
+  - build
   - deploy
 
 cache:
@@ -12,6 +12,16 @@ cache:
 before_script:
   - whoami
   - pwd
+
+test site:
+  stage: test
+  before_script:
+    - npm install -g broken-link-checker wait-on
+  script:
+    - cd website
+    - npm install && npm run start &
+    - wait-on http://localhost:3000/ --timeout 15000
+    - blc --recursive --exclude-external http://localhost:3000
 
 build site:
   stage: build
@@ -25,6 +35,7 @@ build site:
     - cd website/
     - npm install
     - npm run build
+
 deploy website:
   stage: deploy
   before_script:
