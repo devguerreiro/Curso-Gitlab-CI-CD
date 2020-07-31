@@ -45,8 +45,8 @@ build site:
 deploy to staging:
   stage: deploy
   variables:
-    - CNAME: staging-corujam-cicd.surge.sh
-    - GIT_STRATEGY: none
+    CNAME: staging-corujam-cicd.surge.sh
+    GIT_STRATEGY: none
   cache:
     key: build-site
     policy: pull
@@ -65,8 +65,8 @@ deploy to staging:
 deploy to production:
   stage: deploy
   variables:
-    - CNAME: corujam-cicd.surge.sh
-    - GIT_STRATEGY: none
+    NAME: corujam-cicd.surge.sh
+    GIT_STRATEGY: none
   cache:
     key: build-site
     policy: pull
