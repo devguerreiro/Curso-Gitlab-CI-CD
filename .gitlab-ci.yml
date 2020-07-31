@@ -73,7 +73,7 @@ deploy to production:
   after_script:
     - whoami
   environment:
-    name: staging
+    name: production
     url: http://${CNAME}
   only:
     - master
