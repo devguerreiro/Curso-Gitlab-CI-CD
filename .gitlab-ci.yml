@@ -15,8 +15,7 @@ test site:
     - npm install -g broken-link-checker wait-on
   script:
     - cd website && npm install && npm run start &
-    - wait-on http://localhost:3000/ --timeout 60000
-    - blc --recursive --exclude-external http://localhost:3000
+    - wait-on http://localhost:3000/ --timeout 30000 && blc --recursive --exclude-external http://localhost:3000
 
 vulnerabilities check:
   stage: test
