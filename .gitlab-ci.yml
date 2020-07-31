@@ -42,19 +42,42 @@ build site:
     - npm install
     - npm run build
 
-deploy website:
+deploy to staging:
   stage: deploy
+  variables:
+    - CNAME: staging-corujam-cicd.surge.sh
+    - GIT_STRATEGY: none
   cache:
     key: build-site
     policy: pull
   before_script:
     - npm install -g surge
   script:
-    - surge -p website/build/test-site -d corujam-cicd.surge.sh
+    - surge -p website/build/test-site -d ${CNAME}
   after_script:
     - whoami
   environment:
     name: staging
-    url: http://corujam-cicd.surge.sh
+    url: http://${CNAME}
   only:
     - develop
+
+deploy to production:
+  stage: deploy
+  variables:
+    - CNAME: corujam-cicd.surge.sh
+    - GIT_STRATEGY: none
+  cache:
+    key: build-site
+    policy: pull
+  before_script:
+    - npm install -g surge
+  script:
+    - surge -p website/build/test-site -d ${CNAME}
+  after_script:
+    - whoami
+  environment:
+    name: staging
+    url: http://${CNAME}
+  only:
+    - master
