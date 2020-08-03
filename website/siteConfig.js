@@ -21,9 +21,6 @@ const siteConfig = {
     { blog: true, label: "Blog" },
   ],
 
-  // If you have users set above, you add it here:
-  users,
-
   /* path to images for header/footer */
   headerIcon: "img/favicon.ico",
   footerIcon: "img/favicon.ico",
