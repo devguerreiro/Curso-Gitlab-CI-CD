@@ -1,20 +1,30 @@
 image: node
 
 stages:
-  - build
   - test
+  - build
   - deploy
 
-cache:
-  paths:
-    - ./website/build/
+test site:
+  stage: test
+  before_script:
+    - npm install -g broken-link-checker wait-on
+  script:
+    - cd website && npm install && npm run start &
+    - wait-on http://localhost:3000/ --httpTimeout 30000 && blc --recursive --exclude-external http://localhost:3000
 
-before_script:
-  - whoami
-  - pwd
+vulnerabilities check:
+  stage: test
+  script:
+    - cd website && npm install && npm run scan
 
 build site:
   stage: build
+  cache:
+    key: build-site
+    policy: push
+    paths:
+      - ./website/build/
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     when: always
@@ -22,19 +32,75 @@ build site:
     paths:
       - ./website/build/test-site
   script:
-    - cd website/
-    - npm install
-    - npm run build
-deploy website:
+    - cd website && npm install && npm run build
+
+deploy to develop:
   stage: deploy
+  variables:
+    CNAME: develop-corujam-cicd.surge.sh
+    GIT_STRATEGY: none
+  cache:
+    key: build-site
+    policy: pull
   before_script:
     - npm install -g surge
   script:
-    - surge --project ./website/build/test-site --domain coruja-teste.surge.sh
-  after_script:
-    - whoami
+    - surge -p website/build/test-site -d ${CNAME}
   environment:
-    name: staging
-    url: http://coruja-teste.surge.sh
+    name: develop
+    url: http://${CNAME}
   only:
     - develop
+
+deploy to release:
+  stage: deploy
+  variables:
+    CNAME: $CI_COMMIT_REF_SLUG-corujam-cicd.surge.sh
+    GIT_STRATEGY: none
+  cache:
+    key: build-site
+    policy: pull
+  before_script:
+    - npm install -g surge
+  script:
+    - surge -p website/build/test-site -d ${CNAME}
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    url: http://${CNAME}
+    on_stop: turnoff
+  only:
+    - /^release-.*$/
+
+turnoff:
+  stage: deploy
+  variables:
+    CNAME: $CI_COMMIT_REF_SLUG-corujam-cicd.surge.sh
+    GIT_STRATEGY: none
+  before_script:
+    - npm install -g surge
+  script:
+    - surge teardown ${CNAME}
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    action: stop
+  only:
+    - /^release-.*$/
+
+deploy to production:
+  stage: deploy
+  variables:
+    NAME: corujam-cicd.surge.sh
+    GIT_STRATEGY: none
+  cache:
+    key: build-site
+    policy: pull
+  before_script:
+    - npm install -g surge
+  script:
+    - surge -p website/build/test-site -d ${CNAME}
+  environment:
+    name: production
+    url: http://${CNAME}
+  only:
+    - master
