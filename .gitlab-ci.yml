@@ -90,7 +90,7 @@ turnoff:
 deploy to production:
   stage: deploy
   variables:
-    NAME: corujam-cicd.surge.sh
+    CNAME: corujam-cicd.surge.sh
     GIT_STRATEGY: none
   cache:
     key: build-site
