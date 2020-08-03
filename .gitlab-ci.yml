@@ -84,6 +84,8 @@ turnoff:
   environment:
     name: review/$CI_COMMIT_REF_SLUG
     action: stop
+  only:
+    - /^release-.*$/
 
 deploy to production:
   stage: deploy
